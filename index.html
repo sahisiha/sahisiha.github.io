@@ -1,1 +1,191 @@
-<!doctype html><meta charset="utf-8"><title>ŞAHİ SİHA</title><body style="font-family:sans-serif;display:grid;place-items:center;height:100vh;margin:0"><h1>ŞAHİ SİHA · yakında</h1></body>
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>ŞAHİ SİHA</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f7; --card:#ffffff; --fg:#14202b; --muted:#5d6b78; --line:#dde3e8;
+  --accent:#0b6e8a; --accent-soft:#e2f1f5; --ok:#0f7a4f; --warn:#a75c00; --err:#b42318; --input:#ffffff;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"DejaVu Sans Mono",monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1118; --card:#121b25; --fg:#e4eaf0; --muted:#8d9aa7; --line:#223040;
+    --accent:#3cc4e6; --accent-soft:#0f2b36; --ok:#3fd19a; --warn:#f2b64a; --err:#ff8a7a; --input:#0d151e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1118; --card:#121b25; --fg:#e4eaf0; --muted:#8d9aa7; --line:#223040;
+  --accent:#3cc4e6; --accent-soft:#0f2b36; --ok:#3fd19a; --warn:#f2b64a; --err:#ff8a7a; --input:#0d151e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans)}
+#login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:32px max(16px,env(safe-area-inset-left,0px)) 32px max(16px,env(safe-area-inset-right,0px))}
+#login[hidden]{display:none}
+.lg{width:100%;max-width:380px;display:grid;gap:22px}
+.id{display:flex;gap:14px;align-items:center}
+.id img{width:64px;height:64px;border-radius:50%;flex:none}
+.eyebrow{font:500 12px/1.2 var(--mono);letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}
+.id h1{margin:2px 0 0;font-size:26px;letter-spacing:3px;line-height:1.15}
+form.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px}
+form.box label.f{font-weight:600;font-size:14px}
+input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--input);color:var(--fg);font:inherit}
+input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.rem{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted);cursor:pointer;width:max-content}
+button.primary{font:600 14px var(--sans);border-radius:6px;padding:10px 14px;border:1px solid var(--accent);background:var(--accent);color:var(--bg);cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+.msg{font-size:13.5px;min-height:1.4em;margin:0}
+.msg.err{color:var(--err)} .msg.info{color:var(--muted)}
+.foot{color:var(--muted);font-size:12.5px;margin:0}
+</style>
+</head>
+<body>
+<div id="login" hidden>
+  <div class="lg">
+    <div class="id"><img src="logo.png" alt="ŞAHİ SİHA takım logosu" width="64" height="64"><div><div class="eyebrow">TEKNOFEST Savaşan İHA</div><h1>ŞAHİ SİHA</h1></div></div>
+    <form class="box" id="lf" autocomplete="on">
+      <input type="text" name="username" value="sahisiha" autocomplete="username" hidden>
+      <label class="f" for="pw">Takım şifresi</label>
+      <input type="password" id="pw" name="password" autocomplete="current-password" required>
+      <label class="rem"><input type="checkbox" id="rem"> Beni hatırla (bu cihazda)</label>
+      <button type="submit" class="primary" id="go">Giriş</button>
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    </form>
+    <p class="foot">Bu site yalnızca takım üyeleri içindir. İçerik şifrelidir; şifre olmadan okunamaz.</p>
+  </div>
+</div>
+<div id="app"></div>
+<noscript><p style="padding:16px">Bu site için JavaScript gereklidir.</p></noscript>
+<script>
+/*@CRYPTO-BEGIN@*/
+/* ŞAHİ SİHA site şifre çözme (tarayıcı + node doğrulama aynı kodu kullanır).
+   Biçim: PBKDF2-HMAC-SHA256(şifre, tuz, yineleme) -> AES-256-GCM anahtarı; her blob = şifreli metin || 16 bayt etiket,
+   kendi 12 baytlık IV'si ile. IV ve tuz manifestte base64. */
+const SahiCrypto = (() => {
+  const subtle = globalThis.crypto.subtle;
+  const enc = new TextEncoder();
+  const MIN_ITER = 600000;
+  const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const b64e = u => { let s = ''; const a = new Uint8Array(u); for (let i = 0; i < a.length; i += 0x8000) s += String.fromCharCode.apply(null, a.subarray(i, i + 0x8000)); return btoa(s); };
+  const hex = u => [...new Uint8Array(u)].map(b => b.toString(16).padStart(2, '0')).join('');
+
+  async function deriveKey(password, manifest) {
+    const k = manifest.kdf;
+    if (k.name !== 'PBKDF2' || k.hash !== 'SHA-256' || !(k.iterations >= MIN_ITER)) throw new Error('manifest_kdf');
+    const base = await subtle.importKey('raw', enc.encode(password.normalize('NFC')), 'PBKDF2', false, ['deriveKey']);
+    return subtle.deriveKey({name: 'PBKDF2', hash: 'SHA-256', salt: b64d(k.salt), iterations: k.iterations},
+                            base, {name: 'AES-GCM', length: 256}, true, ['decrypt']);
+  }
+  const exportKey = async key => b64e(await subtle.exportKey('raw', key));
+  const importKey = raw => subtle.importKey('raw', b64d(raw), {name: 'AES-GCM', length: 256}, true, ['decrypt']);
+  // AES-GCM etiketi yanlış anahtarda doğrulanamaz -> OperationError (yanlış şifre)
+  const decrypt = (key, ivB64, data) => subtle.decrypt({name: 'AES-GCM', iv: b64d(ivB64), tagLength: 128}, key, data);
+  async function decryptJSON(key, ivB64, data) { return JSON.parse(new TextDecoder().decode(await decrypt(key, ivB64, data))); }
+  // Apps Script anahtarı: hex SHA-256(şifre + ":sahisiha-api"). Şifrenin kendisi değildir.
+  const apiToken = async password => hex(await subtle.digest('SHA-256', enc.encode(password.normalize('NFC') + ':sahisiha-api')));
+  return {deriveKey, exportKey, importKey, decrypt, decryptJSON, apiToken, MIN_ITER};
+})();
+if (typeof module !== 'undefined') module.exports = SahiCrypto;
+/*@CRYPTO-END@*/
+(() => {
+  const STORE = 'sahi_site_oturum_v1';
+  const $ = id => document.getElementById(id);
+  let manifest = null;
+
+  const say = (t, cls) => { $('msg').textContent = t; $('msg').className = 'msg ' + (cls || ''); };
+  const stores = () => [window.localStorage, window.sessionStorage];
+  function readSaved() {
+    for (const s of stores()) { try { const v = JSON.parse(s.getItem(STORE) || 'null'); if (v && v.k) return v; } catch (e) {} }
+    return null;
+  }
+  function clearSaved() { for (const s of stores()) { try { s.removeItem(STORE); } catch (e) {} } }
+  function save(v, remember) {
+    clearSaved();
+    try { (remember ? localStorage : sessionStorage).setItem(STORE, JSON.stringify(v)); } catch (e) {}
+  }
+  async function getBin(id) {
+    const r = await fetch('d/' + id + '.bin');
+    if (!r.ok) throw new Error('fetch_' + r.status);
+    return r.arrayBuffer();
+  }
+  const ivOf = id => { const b = manifest.blobs.find(x => x.id === id); if (!b) throw new Error('blob_yok'); return b.iv; };
+
+  async function openSite(key) {
+    return SahiCrypto.decryptJSON(key, ivOf(manifest.site), await getBin(manifest.site));
+  }
+  function boot(site, key, token) {
+    $('login').hidden = true;
+    window.SAHI = {
+      site, token,
+      root: $('app'),
+      file: async id => SahiCrypto.decrypt(key, ivOf(id), await getBin(id)),
+      logout() { clearSaved(); try { delete window.SAHI; } catch (e) {} location.replace(location.pathname); },
+    };
+    const st = document.createElement('style'); st.textContent = site.app.css; document.head.appendChild(st);
+    const sc = document.createElement('script');
+    const url = URL.createObjectURL(new Blob([site.app.js], {type: 'text/javascript'}));
+    sc.src = url; sc.onload = () => URL.revokeObjectURL(url);
+    document.body.appendChild(sc);
+  }
+  function showLogin(note) {
+    $('app').textContent = '';
+    $('login').hidden = false;
+    if (note) say(note, 'info');
+    $('pw').focus();
+  }
+
+  $('lf').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    const pw = $('pw').value;
+    if (!pw || !manifest) return;
+    $('go').disabled = true; say('Şifre çözülüyor…', 'info');
+    let key, site;
+    try {
+      key = await SahiCrypto.deriveKey(pw, manifest);
+      site = await openSite(key);
+    } catch (e) {
+      $('go').disabled = false;
+      if (e && e.name === 'OperationError') { say('Şifre yanlış. Tekrar deneyin.', 'err'); $('pw').select(); }
+      else say('Site açılamadı (' + (e && e.message || e) + '). Bağlantınızı kontrol edip sayfayı yenileyin.', 'err');
+      return;
+    }
+    const token = await SahiCrypto.apiToken(pw);
+    save({k: await SahiCrypto.exportKey(key), t: token, s: manifest.kdf.salt}, $('rem').checked);
+    $('pw').value = '';
+    $('go').disabled = false; say('');
+    boot(site, key, token);
+  });
+
+  (async () => {
+    try {
+      const r = await fetch('d/m.json', {cache: 'no-store'});
+      if (!r.ok) throw new Error('manifest_' + r.status);
+      manifest = await r.json();
+    } catch (e) {
+      showLogin(); say('Site yüklenemedi. Bağlantınızı kontrol edip sayfayı yenileyin.', 'err'); $('go').disabled = true; return;
+    }
+    const saved = readSaved();
+    if (saved) {
+      if (saved.s === manifest.kdf.salt) {
+        try { const key = await SahiCrypto.importKey(saved.k); boot(await openSite(key), key, saved.t); return; } catch (e) {}
+      }
+      clearSaved();
+      showLogin('Site güncellendi veya şifre değişti; lütfen şifreyi tekrar girin.');
+      return;
+    }
+    showLogin();
+  })();
+})();
+</script>
+</body>
+</html>

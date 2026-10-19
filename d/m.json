@@ -1,0 +1,28 @@
+{
+ "v": 1,
+ "kdf": {
+  "name": "PBKDF2",
+  "hash": "SHA-256",
+  "iterations": 600000,
+  "salt": "Iva14MRR+YZLwjuu6GPN7w=="
+ },
+ "cipher": "AES-256-GCM",
+ "site": "d4b823b1631a7b5ebecd",
+ "blobs": [
+  {
+   "id": "243a7d0a181e17c51b6b",
+   "iv": "b9rSdC89ByhkbGs2",
+   "size": 359
+  },
+  {
+   "id": "80b1743d926d81811ddc",
+   "iv": "r4HI0EBmDM1mreVE",
+   "size": 1687703
+  },
+  {
+   "id": "d4b823b1631a7b5ebecd",
+   "iv": "cXCah5My8T1NTAVY",
+   "size": 45298
+  }
+ ]
+}
