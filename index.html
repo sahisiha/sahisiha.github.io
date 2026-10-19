@@ -49,7 +49,7 @@ button:disabled{opacity:.55;cursor:default}
 /* ---------------- giriş sayfası (yalnız #login içinde; yukarıdaki ortak kurallar uygulamada da geçerli) */
 #login{
   --l-navy:#0b3d8c; --l-navy2:#082a63; --l-ink:#0f1b2d; --l-muted:#5b6b80; --l-line:#d3dbe7; --l-field:#f5f7fb;
-  --l-err:#b42318; --l-hero-h:clamp(230px,40svh,400px); --l-col:clamp(420px,36vw,560px); --px:0; --py:0;
+  --l-err:#b42318; --l-hero-h:clamp(230px,40svh,400px); --l-col:clamp(420px,36vw,560px);
   position:relative; color-scheme:light; color:var(--l-ink); background:#073a85; overflow:clip;
   min-height:100vh; min-height:100dvh; display:grid; grid-template-columns:minmax(0,1fr) var(--l-col);
 }
@@ -60,37 +60,30 @@ button:disabled{opacity:.55;cursor:default}
   background:
     radial-gradient(ellipse 55% 50% at 36% 46%, rgba(40,130,230,.55), rgba(40,130,230,0) 70%),
     radial-gradient(ellipse 120% 95% at 42% 48%, #0a54a8 0%, #0a4a9c 40%, #08397f 68%, #15276a 88%, #261f5a 100%)}
-#login .dots{position:absolute; left:-24px; top:-24px; width:calc(100% + 48px); height:calc(100% + 48px); display:block;
-  transform:translate3d(calc(var(--px) * -14px), calc(var(--py) * -10px), 0)}
-#login .sweep{position:absolute; inset:-30% -80%;
-  background:linear-gradient(104deg, transparent 44%, rgba(170,220,255,.075) 49%, rgba(255,255,255,.11) 50%, rgba(170,220,255,.075) 51%, transparent 56%);
-  animation:l-sweep 18s cubic-bezier(.45,0,.55,1) infinite}
-@keyframes l-sweep{0%{transform:translateX(-32%)} 55%,100%{transform:translateX(32%)}}
-#login .route{position:absolute; left:0; top:0; width:min(48vw,720px); height:auto; overflow:visible; color:#fff;
-  transform:translate3d(calc(var(--px) * 9px), calc(var(--py) * 7px), 0)}
-#login .route .trail{fill:none; stroke:rgba(255,255,255,.85); stroke-width:2.2; stroke-linecap:round; stroke-dasharray:8 8; animation:l-dash 2.4s linear infinite}
-@keyframes l-dash{to{stroke-dashoffset:-32}}
+#login .dots{position:absolute; left:-24px; top:-24px; width:calc(100% + 48px); height:calc(100% + 48px); display:block}
+#login .sweep{position:absolute; inset:-30% -80%; transform:translateX(-6%);
+  background:linear-gradient(104deg, transparent 44%, rgba(170,220,255,.075) 49%, rgba(255,255,255,.11) 50%, rgba(170,220,255,.075) 51%, transparent 56%);}
+#login .route{position:absolute; left:0; top:0; width:min(48vw,720px); height:auto; overflow:visible; color:#fff}
+#login .route .trail{fill:none; stroke:rgba(255,255,255,.85); stroke-width:2.2; stroke-linecap:round; stroke-dasharray:8 8}
 #login .route .jet{fill:#fff; filter:drop-shadow(0 3px 6px rgba(0,10,40,.45))}
 
 /* ---- sol sahne: amblem filigranı, radar/ufuk ızgarası, 3B uçak */
 #login .hero{position:sticky; top:0; z-index:1; height:100vh; height:100dvh; overflow:hidden}
-#login .emblem{position:absolute; left:50%; top:46%; width:min(76%, 80vh); aspect-ratio:1; color:#d6ebff;
-  transform:translate(-50%,-50%) translate3d(calc(var(--px) * 6px), calc(var(--py) * 5px), 0)}
-#login .emblem .ring{opacity:.08}
-#login .emblem .face{opacity:.5}
-#login .emblem text{font:700 28px var(--sans); letter-spacing:5px; fill:currentColor}
+#login .emblem{position:absolute; left:50%; top:46%; width:min(74%, 78vh); height:auto; aspect-ratio:1; opacity:.44;
+  transform:translate(-50%,-50%); pointer-events:none; user-select:none; -webkit-user-drag:none;
+  filter:saturate(.85) contrast(1.18) brightness(1.04) drop-shadow(0 12px 32px rgba(1,8,28,.6))}
+/* uçağın arkasında hafif koyu hale: gri SİHA açık bulutlu amblem üzerinde de seçilsin */
+#login .h3d{filter:drop-shadow(0 0 14px rgba(3,14,44,.55)) drop-shadow(0 10px 18px rgba(2,8,30,.35))}
 #login .horizon{position:absolute; left:-8%; right:-8%; top:57%; bottom:0; color:#9fd0ff; opacity:.3;
   -webkit-mask-image:linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent), linear-gradient(to right, transparent, #000 25%, #000 75%, transparent);
   -webkit-mask-composite:source-in; mask-image:linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent), linear-gradient(to right, transparent, #000 25%, #000 75%, transparent);
-  mask-composite:intersect; transform:translate3d(calc(var(--px) * 4px), 0, 0)}
+  mask-composite:intersect}
 #login .horizon svg{width:100%; height:100%; display:block}
 #login .radar{position:absolute; left:50%; top:63%; width:min(72%, 660px); aspect-ratio:1; border-radius:50%; overflow:hidden;
   transform:translate(-50%,-50%) scaleY(.26); border:1.5px solid rgba(150,210,255,.22);
   background:repeating-radial-gradient(circle, transparent 0 15.6%, rgba(150,210,255,.16) 16% 16.6%);
   -webkit-mask-image:radial-gradient(circle, #000 55%, transparent 72%); mask-image:radial-gradient(circle, #000 55%, transparent 72%)}
-#login .radar i{position:absolute; inset:0; background:conic-gradient(from 0deg, rgba(120,200,255,0) 0deg, rgba(120,200,255,0) 300deg, rgba(140,215,255,.32) 358deg, rgba(220,245,255,.55) 360deg);
-  animation:l-spin 7s linear infinite}
-@keyframes l-spin{to{transform:rotate(360deg)}}
+#login .radar i{position:absolute; inset:0; background:conic-gradient(from 0deg, rgba(120,200,255,0) 0deg, rgba(120,200,255,0) 300deg, rgba(140,215,255,.32) 358deg, rgba(220,245,255,.55) 360deg);; transform:rotate(-38deg)}
 #login .stage{position:absolute; inset:0; z-index:1}
 #login .h3d{position:absolute; inset:0; width:100%; height:100%; display:block; opacity:0; transition:opacity .9s ease;
   touch-action:pan-y; cursor:grab; -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none}
@@ -117,12 +110,9 @@ button:disabled{opacity:.55;cursor:default}
 /* ---- kart: hafif perspektifle izleyiciye dönük, katmanlı gölge, kenar parlaması */
 #login .panel{position:relative; z-index:2; display:flex; align-items:center; justify-content:center;
   padding:32px clamp(28px,3.4vw,64px) 96px clamp(8px,1vw,16px); perspective:1500px}
-#login .deck{position:relative; width:100%; max-width:410px; transform-style:preserve-3d; transform-origin:65% 50%;
-  transition:transform .7s cubic-bezier(.2,.7,.2,1)}
-/* eğim yalnız fare + hareket serbestken (fx.js #login.tilt ekler); yazarken/odakta değer varken düz */
-#login.tilt .deck{transform:rotateY(calc(-9deg + var(--px) * 4deg)) rotateX(calc(3deg - var(--py) * 3deg))}
-#login.tilt .deck:hover{transform:rotateY(calc(-3deg + var(--px) * 1.5deg)) rotateX(calc(1deg - var(--py) * 1deg))}
-#login.tilt .deck.flat{transform:none}
+#login .deck{position:relative; width:100%; max-width:410px; transform-style:preserve-3d; transform-origin:65% 50%}
+/* sabit 3B açı (fareye tepki yok); yalnız masaüstünde */
+@media (min-width: 900px){ #login .deck{transform:rotateY(-7deg) rotateX(2deg)} }
 #login .sheet{position:absolute; inset:0; border-radius:24px; transform:translate3d(16px,18px,-40px);
   background:linear-gradient(150deg, rgba(255,255,255,.30), rgba(255,255,255,.10)); border:1px solid rgba(255,255,255,.28);
   -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); box-shadow:0 30px 60px rgba(2,12,40,.30)}
@@ -185,13 +175,13 @@ button:disabled{opacity:.55;cursor:default}
   #login{display:block}
   #login .hero{position:relative; height:var(--l-hero-h)}
   #login .stage{top:env(safe-area-inset-top); bottom:26px}
-  #login .emblem{top:48%; width:min(92%, 62svh)}
+  #login .emblem{top:45%; width:min(80%, 50svh)}
   #login .horizon{top:56%}
   #login .radar{top:66%; width:min(96%, 520px)}
   #login .route{width:min(78vw,420px)}
   #login .hint{bottom:54px; font-size:11px; padding:7px 12px}
   #login .panel{display:block; margin-top:-30px; padding:0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left)); perspective:none}
-  #login .deck, #login.tilt .deck, #login.tilt .deck:hover{max-width:480px; margin:0 auto; transform:none}
+  #login .deck{max-width:480px; margin:0 auto; transform:none}
   #login .sheet{inset:-10px 14px auto; height:40px; transform:none; border-radius:22px 22px 0 0; border-bottom:0; box-shadow:none}
   #login .card{padding:24px 20px 18px;
     box-shadow:inset 0 1px 0 #fff, 0 -2px 6px rgba(3,18,52,.12), 0 -14px 30px rgba(3,18,52,.22), 0 18px 40px rgba(2,10,36,.35)}
@@ -209,8 +199,6 @@ button:disabled{opacity:.55;cursor:default}
 @media (min-width: 900px) and (max-height: 700px){ #login .hint{display:none} }
 @media (prefers-reduced-motion: reduce){
   #login *{transition:none !important; animation:none !important}
-  #login.tilt .deck, #login.tilt .deck:hover{transform:none}
-  #login .sweep{display:none}
 }
 </style>
 </head>
@@ -225,18 +213,7 @@ button:disabled{opacity:.55;cursor:default}
     </svg>
   </div>
   <section class="hero" aria-label="ŞAHİ SİHA uçağının 3B modeli">
-    <svg class="emblem" viewBox="0 0 400 400" aria-hidden="true">
-      <defs><path id="em-top" d="M58 200 A142 142 0 0 1 342 200"/><path id="em-bot" d="M44 200 A156 156 0 0 0 356 200"/></defs>
-      <image class="face" href="assets/emblem-face.webp" x="70" y="70" width="260" height="260" preserveAspectRatio="xMidYMid meet"/>
-      <g class="ring">
-      <circle cx="200" cy="200" r="194" fill="none" stroke="currentColor" stroke-width="3"/>
-      <circle cx="200" cy="200" r="184" fill="none" stroke="currentColor" stroke-width="1"/>
-      <circle cx="200" cy="200" r="126" fill="none" stroke="currentColor" stroke-width="2.5"/>
-      <text><textPath href="#em-top" startOffset="50%" text-anchor="middle">İSTİKBAL GÖKLERDEDİR</textPath></text>
-      <text><textPath href="#em-bot" startOffset="50%" text-anchor="middle" dominant-baseline="hanging">ŞAHİ UAV TEAM</textPath></text>
-      <g fill="currentColor"><path d="M34 200l4.2 9 9.8 1.2-7.2 6.7 1.9 9.7-8.7-4.8-8.7 4.8 1.9-9.7-7.2-6.7 9.8-1.2z" transform="translate(0 -14)"/><path d="M366 200l4.2 9 9.8 1.2-7.2 6.7 1.9 9.7-8.7-4.8-8.7 4.8 1.9-9.7-7.2-6.7 9.8-1.2z" transform="translate(0 -14)"/></g>
-      </g>
-    </svg>
+    <img class="emblem" src="assets/emblem.webp" alt="" width="1000" height="1000" decoding="async">
     <div class="horizon" aria-hidden="true"><svg viewBox="0 0 1000 300" preserveAspectRatio="none">
       <g fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke">
         <path d="M0 6H1000M0 20H1000M0 40H1000M0 68H1000M0 104H1000M0 150H1000M0 206H1000M0 272H1000"/>

@@ -11,6 +11,77 @@ const IDLE_SPIN = 0.22;                            // rad/s, boşta yavaş dön�
 const IDLE_AFTER = 2600;                           // ms
 const DRAG_THRESHOLD = 6;                          // px; altı tıklama/kaydırma sayılır
 
+
+// ---- itici (pusher) motor + pervane: SunnySky X4120 (Ø41 × 45 mm can) + EOLO 15×8 iki pal (Ø381 mm, hatve 203 mm).
+// Konum GLB çerçevesinde: CAD motor yüzü model x=-0.611 m, itki ekseni model z≈-0.042 m; GLB = (x+0.048, z-0.0266, -y).
+const ENG = {x0: -0.563, y: -0.0687, can: 0.045, rCan: 0.0205, R: 0.1905, pitch: 0.2032};
+function buildEngine() {
+  const g = new THREE.Group();
+  const dark = new THREE.MeshPhysicalMaterial({name: 'motor_can', color: 0x16181c, metalness: 0.7, roughness: 0.35, clearcoat: 0.4});
+  const silver = new THREE.MeshPhysicalMaterial({name: 'motor_ring', color: 0xc9ced6, metalness: 1, roughness: 0.25});
+  const carbon = new THREE.MeshPhysicalMaterial({name: 'prop', color: 0x121417, metalness: 0.2, roughness: 0.38, clearcoat: 0.7, clearcoatRoughness: 0.3, side: THREE.DoubleSide});
+  const along = geo => geo.rotateZ(Math.PI / 2);                 // silindir eksenini Y'den X'e çevir
+  const xc = ENG.x0 - ENG.can / 2;
+  const can = new THREE.Mesh(along(new THREE.CylinderGeometry(ENG.rCan, ENG.rCan, ENG.can, 40, 1)), dark);
+  can.position.set(xc, ENG.y, 0); g.add(can);
+  for (const [dx, w] of [[-ENG.can / 2 + 0.004, 0.005], [ENG.can / 2 - 0.009, 0.004]]) {   // gümüş halkalar
+    const ring = new THREE.Mesh(along(new THREE.CylinderGeometry(ENG.rCan + 0.0008, ENG.rCan + 0.0008, w, 40, 1)), silver);
+    ring.position.set(xc + dx, ENG.y, 0); g.add(ring);
+  }
+  const shaft = new THREE.Mesh(along(new THREE.CylinderGeometry(0.004, 0.004, 0.024, 12)), silver);
+  shaft.position.set(ENG.x0 - ENG.can - 0.010, ENG.y, 0); g.add(shaft);
+
+  const prop = new THREE.Group();
+  prop.position.set(ENG.x0 - ENG.can - 0.016, ENG.y, 0);
+  const hub = new THREE.Mesh(along(new THREE.CylinderGeometry(0.014, 0.014, 0.014, 24)), carbon);
+  prop.add(hub);
+  const spinner = new THREE.Mesh(new THREE.LatheGeometry(
+    Array.from({length: 13}, (_, i) => { const t = i / 12; return new THREE.Vector2(0.0145 * Math.sqrt(Math.max(0, 1 - t * t)), -t * 0.032); }), 28), silver);
+  spinner.rotation.z = -Math.PI / 2; spinner.position.x = -0.007;     // ucu arkaya (-X)
+  prop.add(spinner);
+  const blade = bladeGeometry();
+  for (const a of [0, Math.PI]) { const b = new THREE.Mesh(blade, carbon); b.rotation.x = a; prop.add(b); }
+  const disc = new THREE.Mesh(new THREE.RingGeometry(0.03, ENG.R, 72, 1).rotateY(Math.PI / 2),
+    new THREE.MeshBasicMaterial({color: 0x0a0d12, transparent: true, opacity: 0.07, depthWrite: false, side: THREE.DoubleSide}));
+  prop.add(disc);
+  g.add(prop);
+  return {group: g, prop, disc};
+}
+// burulmuş, sivrilen pal: istasyonlarda ince profil kesiti, hatve açısı β = atan(P / 2πr)
+function bladeGeometry() {
+  const NS = 22, NP = 14, r0 = 0.013, R = ENG.R;
+  const pos = [], idx = [];
+  for (let i = 0; i <= NS; i++) {
+    const u = i / NS, r = r0 + (R - r0) * u, x = r / R;
+    let c = 0.034 * (0.42 + 0.58 * Math.exp(-(((x - 0.36) / 0.34) ** 2)));
+    if (x > 0.86) c *= Math.sqrt(Math.max(0.04, (1 - x) / 0.14));   // yuvarlak uç
+    if (x < 0.16) c *= 0.55 + 0.45 * (x / 0.16);                    // göbeğe doğru daralan kök
+    const th = c * (x < 0.16 ? 0.30 : 0.13 - 0.07 * x);
+    const beta = Math.atan(ENG.pitch / (2 * Math.PI * r));
+    const cb = Math.cos(beta), sb = Math.sin(beta);
+    for (let j = 0; j < NP; j++) {
+      const a = (j / NP) * Math.PI * 2;
+      const sc = 0.5 * Math.cos(a);                                  // kiriş boyunca (-0.5 firar, +0.5 hücum)
+      const camber = 0.04 * c * (1 - 4 * sc * sc);
+      const st = 0.5 * th * Math.sin(a) * (0.6 + 0.4 * (sc + 0.5)) + camber;  // kalınlık + hafif kamburluk
+      const lc = sc * c, ln = st;
+      // kiriş yönü: cosβ·Z (dönme yönü) + sinβ·(-X) (itici: hava arkaya)
+      pos.push(-lc * sb + ln * cb, r, lc * cb + ln * sb);
+    }
+  }
+  for (let i = 0; i < NS; i++) for (let j = 0; j < NP; j++) {
+    const a = i * NP + j, b = i * NP + (j + 1) % NP, c2 = a + NP, d = b + NP;
+    idx.push(a, c2, b, b, c2, d);
+  }
+  const tip = pos.length / 3; pos.push(...pos.slice(NS * NP * 3, NS * NP * 3 + 3).map((v, k) => k === 1 ? R + 0.002 : v));
+  for (let j = 0; j < NP; j++) idx.push(NS * NP + j, tip, NS * NP + (j + 1) % NP);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  return geo;
+}
+const PROP_SPEED = 9;                               // rad/s: görünür, orta hızlı dönüş (gerçek devir değil)
+
 export function mount(host) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   let renderer;
@@ -54,7 +125,7 @@ export function mount(host) {
   shadow.rotation.x = -Math.PI / 2; shadow.position.y = -0.42;
   scene.add(shadow);
 
-  let radius = 1;
+  let radius = 1, engine = null;
   let yaw = DEF_YAW, pitch = DEF_PITCH, vYaw = 0, vPitch = 0;
   let lastInput = -1e9, resetAnim = null, loaded = false, running = false, visible = true, raf = 0, t0 = performance.now(), last = t0;
 
@@ -80,6 +151,7 @@ export function mount(host) {
     pitchG.rotation.x = pitch;
     yawG.rotation.y = yaw;
     floatG.position.y = reduce.matches ? 0 : Math.sin((now - t0) / 1400) * 0.018;
+    if (engine) { engine.disc.visible = !reduce.matches; if (!reduce.matches) engine.prop.rotation.x = ((now - t0) / 1000 * PROP_SPEED) % (2 * Math.PI); }
     shadow.scale.setScalar(1 - floatG.position.y * 2);
   }
   function renderOnce() { if (loaded) { apply(performance.now()); renderer.render(scene, camera); } }
@@ -198,6 +270,8 @@ export function mount(host) {
         } else old.side = THREE.DoubleSide;
       }
     });
+    engine = buildEngine();
+    root.add(engine.group);                  // gövde çerçevesinde (merkezleme sonrası da aynı ofset)
     yawG.add(root);
     loaded = true;
     resize();

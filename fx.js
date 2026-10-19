@@ -1,11 +1,8 @@
-// ŞAHİ SİHA giriş sayfası arka plan efektleri: yarım ton (halftone) nokta alanı + fareyle hafif paralaks ve kart eğimi.
+// ŞAHİ SİHA giriş sayfası arka planı: sabit yarım ton (halftone) nokta alanı (yalnız boyut değişince yeniden çizilir).
 // Giriş/şifre çözme kodundan bağımsızdır; burada bir hata olursa yalnız süsler eksik kalır.
 (() => {
-  const login = document.getElementById('login');
   const dots = document.getElementById('dots');
-  if (!login || !dots) return;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  if (!dots) return;
 
   // ---- yarım ton noktalar: kenarlarda/köşelerde yoğun, ortada (uçağın arkası) boş
   function draw() {
@@ -34,33 +31,4 @@
   let rt = 0;
   new ResizeObserver(() => { cancelAnimationFrame(rt); rt = requestAnimationFrame(draw); }).observe(dots);
 
-  // ---- kart eğimi + paralaks yalnız fare ile ve hareket azaltılmamışsa
-  const tilt = () => login.classList.toggle('tilt', fine.matches && !reduce.matches);
-  tilt();
-  fine.addEventListener && fine.addEventListener('change', tilt);
-  reduce.addEventListener && reduce.addEventListener('change', tilt);
-
-  // ---- paralaks: --px/--py (-1..1) yumuşak takip; yalnız fare, hareket azaltılmamışsa
-  let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
-  function tick() {
-    x += (tx - x) * 0.08; y += (ty - y) * 0.08;
-    login.style.setProperty('--px', x.toFixed(4));
-    login.style.setProperty('--py', y.toFixed(4));
-    raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.001 ? requestAnimationFrame(tick) : 0;
-  }
-  window.addEventListener('pointermove', e => {
-    if (e.pointerType !== 'mouse' || reduce.matches || !fine.matches || login.hidden) return;
-    tx = (e.clientX / innerWidth) * 2 - 1; ty = (e.clientY / innerHeight) * 2 - 1;
-    if (!raf) raf = requestAnimationFrame(tick);
-  }, {passive: true});
-  document.addEventListener('mouseleave', () => { tx = ty = 0; if (!raf) raf = requestAnimationFrame(tick); });
-
-  // ---- kart: yazarken / şifre alanında değer varken dümdüz (net yazı, eğim yok)
-  const pw = document.getElementById('pw'), card = document.querySelector('#login .deck');
-  if (pw && card) {
-    const sync = () => card.classList.toggle('flat', pw.value.length > 0);
-    pw.addEventListener('keydown', () => card.classList.add('flat'));
-    pw.addEventListener('input', sync);
-    pw.addEventListener('blur', sync);
-  }
 })();
