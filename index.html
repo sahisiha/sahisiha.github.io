@@ -12,27 +12,27 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 :root{
-  --bg:#070c18; --card:#0e172a; --fg:#f8fafc; --muted:#94a3b8; --line:#1a273f;
-  --accent:#7dd3fc; --accent-soft:rgba(125, 211, 252, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#091224;
+  --bg:#0b0c10; --card:#13151f; --fg:#f8fafc; --muted:#94a3b8; --line:#1e2230;
+  --accent:#818cf8; --accent-soft:rgba(129, 140, 248, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#0d0f17;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"DejaVu Sans Mono",monospace;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#070c18; --card:#0e172a; --fg:#f8fafc; --muted:#94a3b8; --line:#1a273f;
-    --accent:#7dd3fc; --accent-soft:rgba(125, 211, 252, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#091224;
+    --bg:#0b0c10; --card:#13151f; --fg:#f8fafc; --muted:#94a3b8; --line:#1e2230;
+    --accent:#818cf8; --accent-soft:rgba(129, 140, 248, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#0d0f17;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#070c18; --card:#0e172a; --fg:#f8fafc; --muted:#94a3b8; --line:#1a273f;
-  --accent:#7dd3fc; --accent-soft:rgba(125, 211, 252, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#091224;
+  --bg:#0b0c10; --card:#13151f; --fg:#f8fafc; --muted:#94a3b8; --line:#1e2230;
+  --accent:#818cf8; --accent-soft:rgba(129, 140, 248, 0.12); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#0d0f17;
   color-scheme: dark;
 }
 :root[data-theme="light"]{
-  --bg:#0a1020; --card:#111c32; --fg:#f8fafc; --muted:#94a3b8; --line:#1e2d48;
-  --accent:#7dd3fc; --accent-soft:rgba(125, 211, 252, 0.14); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#0c152a;
+  --bg:#0e1017; --card:#161924; --fg:#f8fafc; --muted:#94a3b8; --line:#222636;
+  --accent:#818cf8; --accent-soft:rgba(129, 140, 248, 0.14); --ok:#86efac; --warn:#fde047; --err:#fca5a5; --input:#10131c;
   color-scheme: dark;
 }
 *{box-sizing:border-box}
@@ -49,8 +49,8 @@ form.box label.f{font-weight:600;font-size:14px;color:#ffffff}
 input[type=password]{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--input);color:#ffffff;font:inherit}
 input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .rem{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted);cursor:pointer;width:max-content}
-button.primary{font:700 14px var(--sans);border-radius:7px;padding:11px 16px;border:1px solid #bae6fd;background:#7dd3fc;color:#081325;cursor:pointer;box-shadow:0 4px 14px rgba(125,211,252,0.22);transition:all .15s ease}
-button.primary:hover{background:#a5f3fc;box-shadow:0 6px 18px rgba(125,211,252,0.32)}
+button.primary{font:700 14px var(--sans);border-radius:7px;padding:11px 16px;border:1px solid #c7d2fe;background:#818cf8;color:#0b0c10;cursor:pointer;box-shadow:0 4px 14px rgba(129,140,248,0.25);transition:all .15s ease}
+button.primary:hover{background:#a5b4fc;box-shadow:0 6px 18px rgba(129,140,248,0.35)}
 button:disabled{opacity:.55;cursor:default}
 .msg{font-size:13.5px;min-height:1.4em;margin:0}
 .msg.err{color:var(--err)} .msg.info{color:var(--muted)}
