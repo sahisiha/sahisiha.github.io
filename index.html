@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -10,29 +10,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<script>
+  (function(){
+    var t = localStorage.getItem('sahi_theme_v1') || 'dark';
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
 <style>
-:root{
-  --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
+:root, :root[data-theme="dark"]{
+  --bg:#0b0f19; --card:#111827; --card-sub:#1a2234; --fg:#f8fafc; --fg-sec:#cbd5e1; --muted:#94a3b8; --line:#1e293b;
+  --accent:#3b82f6; --accent-soft:rgba(59, 130, 246, 0.15); --accent-hover:#60a5fa;
+  --ok:#10b981; --warn:#f59e0b; --err:#ef4444; --input:#161f30;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"DejaVu Sans Mono",monospace;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-    --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
-    color-scheme: light;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0f172a; --card:#1e293b; --fg:#f8fafc; --muted:#94a3b8; --line:#334155;
-  --accent:#38bdf8; --accent-soft:rgba(56, 189, 248, 0.12); --ok:#34d399; --warn:#fbbf24; --err:#f87171; --input:#0f172a;
   color-scheme: dark;
 }
 :root[data-theme="light"]{
-  --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
+  --bg:#f8fafc; --card:#ffffff; --card-sub:#f1f5f9; --fg:#0f172a; --fg-sec:#334155; --muted:#64748b; --line:#e2e8f0;
+  --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --accent-hover:#1d4ed8;
+  --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
   color-scheme: light;
 }
 *{box-sizing:border-box}
@@ -46,7 +42,7 @@ body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--sans)}
 .id h1{margin:2px 0 0;font-size:26px;letter-spacing:3px;line-height:1.15;color:#ffffff}
 form.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:14px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 form.box label.f{font-weight:600;font-size:14px;color:#ffffff}
-input[type=password]{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--input);color:#0f172a;font:inherit}
+input[type=password]{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--input);color:var(--fg);font:inherit}
 input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .rem{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted);cursor:pointer;width:max-content}
 button.primary{font:700 14px var(--sans);border-radius:7px;padding:11px 16px;border:1px solid #1d4ed8;background:#2563eb;color:#ffffff;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,0.3);transition:all .15s ease}
