@@ -13,7 +13,7 @@
 <style>
 :root{
   --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --accent:#0284c7; --accent-soft:rgba(2, 132, 199, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
+  --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
   --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"DejaVu Sans Mono",monospace;
   color-scheme: light;
@@ -21,7 +21,7 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-    --accent:#0284c7; --accent-soft:rgba(2, 132, 199, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
+    --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
     color-scheme: light;
   }
 }
@@ -32,7 +32,7 @@
 }
 :root[data-theme="light"]{
   --bg:#f8fafc; --card:#ffffff; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --accent:#0284c7; --accent-soft:rgba(2, 132, 199, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
+  --accent:#2563eb; --accent-soft:rgba(37, 99, 235, 0.08); --ok:#10b981; --warn:#d97706; --err:#ef4444; --input:#ffffff;
   color-scheme: light;
 }
 *{box-sizing:border-box}
@@ -49,8 +49,8 @@ form.box label.f{font-weight:600;font-size:14px;color:#ffffff}
 input[type=password]{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:7px;background:var(--input);color:#0f172a;font:inherit}
 input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .rem{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--muted);cursor:pointer;width:max-content}
-button.primary{font:700 14px var(--sans);border-radius:7px;padding:11px 16px;border:1px solid #0284c7;background:#0284c7;color:#ffffff;cursor:pointer;box-shadow:0 4px 14px rgba(2,132,199,0.3);transition:all .15s ease}
-button.primary:hover{background:#0369a1;box-shadow:0 6px 18px rgba(2,132,199,0.4)}
+button.primary{font:700 14px var(--sans);border-radius:7px;padding:11px 16px;border:1px solid #1d4ed8;background:#2563eb;color:#ffffff;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,0.3);transition:all .15s ease}
+button.primary:hover{background:#1d4ed8;box-shadow:0 6px 18px rgba(37,99,235,0.4)}
 button:disabled{opacity:.55;cursor:default}
 .msg{font-size:13.5px;min-height:1.4em;margin:0}
 .msg.err{color:var(--err)} .msg.info{color:var(--muted)}
